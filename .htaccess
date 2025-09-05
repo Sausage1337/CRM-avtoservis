@@ -1,0 +1,96 @@
+RewriteEngine On
+
+# Безопасность
+<Files "*.php">
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+# Запрет доступа к конфигурационным файлам
+<Files "config/*">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Запрет доступа к контроллерам напрямую
+<Files "controllers/*">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Запрет доступа к моделям напрямую
+<Files "models/*">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Запрет доступа к views напрямую
+<Files "views/*">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Разрешаем доступ только к index.php
+<Files "index.php">
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+# Разрешаем доступ к статическим файлам
+<FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# Перенаправление всех запросов на index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Защита от доступа к скрытым файлам
+<Files ".htaccess">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+<Files ".env">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Заголовки безопасности
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Сжатие файлов
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+</IfModule>
+
+# Кэширование статических файлов
+<IfModule mod_expires.c>
+    ExpiresActive on
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/ico "access plus 1 year"
+    ExpiresByType image/icon "access plus 1 year"
+    ExpiresByType text/plain "access plus 1 month"
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType application/x-shockwave-flash "access plus 1 month"
+</IfModule>
